@@ -24,7 +24,28 @@ namespace WebApiCoreAngularPrimeTechv2.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TblCustomerInvoice>>> GetTblCustomerInvoice()
         {
-            return await _context.TblCustomerInvoice.ToListAsync();
+            //return await _context.TblCustomerInvoice.ToListAsync();
+            var customers = (from d in _context.TblCustomerInvoice
+                             join q in _context.TblCustomerInvoiceQuantity
+                             on d.QuantityID equals q.Id
+
+                             select new TblCustomerInvoice
+                             {
+                                 Id = d.Id,
+                                 FirstName = d.FirstName,
+                                 LastName = d.LastName,
+                                 Email= d.Email,
+                                 Age= d.Age,
+                                 Doj = d.Doj,
+                                 Gender = d.Gender,
+                                 IsMarried = d.IsMarried,
+                                 IsActive = d.IsActive,
+                                 Description = d.Description,
+                                 QuantityID = d.QuantityID,
+                                 Quantity = q.Quantity,
+                             }
+                             ).ToListAsync();
+            return await customers;
         }
 
         // GET: api/CustomerInvoices/5
